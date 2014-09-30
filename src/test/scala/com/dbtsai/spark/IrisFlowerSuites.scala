@@ -30,20 +30,9 @@ class IrisFlowerSuites extends FunSuite with BeforeAndAfterAll {
 
     val hc: HiveContext = new HiveContext(sc)
 
-    val schemaRDD = IrisFlowerPrediction.convertRDDtoSchemaRDD(input, cached = true, hc)
-
-    val tenLines = schemaRDD.take(10)
-
-    val setosaVersicolor = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'versicolor'")
-
-    // Be very careful about this....
-    val setosaVersicolorCollection = setosaVersicolor.collect()
-
-    val setosaVirginica = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'virginica'")
-    val setosaVirginicaCollection = setosaVirginica.collect()
-
-    val versicolorVirginica = hc.sql("SELECT * FROM iris WHERE species == 'versicolor' OR species == 'virginica'")
-    val versicolorVirginicaCollection = setosaVirginica.collect()
+//    val schemaRDD = IrisFlowerPrediction.convertRDDtoSchemaRDD(input, cached = true, hc)
+//
+//    val tenLines = schemaRDD.take(10)
 
     println("")
 

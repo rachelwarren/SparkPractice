@@ -15,17 +15,17 @@ object LetterFrequency {
   }
 
   def computeLF2(input: RDD[String]): Map[Char, Long] = {
+    /*
     input.mapPartitions(iter => {
       val charMap = scala.collection.mutable.Map[Char, Long]()
       for (line <- iter) {
-        line.toCharArray().filter(_.isLetter).map(char => charMap.put(char.toLower, charMap.getOrElse(char.toLower, 0L) + 1))
+         ???
       }
       Iterator(charMap)
     }).reduce((map1, map2) => {
-      map2.foreach {
-        case (key, value) => map1.put(key, map1.getOrElse(key, 0L) + map2.getOrElse(key, 0L))
-      }
-      map1
+         ???
     })
+    */
+    computeLF1(input)
   }
 }
