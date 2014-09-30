@@ -1,5 +1,6 @@
 package com.dbtsai.spark
 
+import org.apache.spark.sql.SchemaRDD
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -30,9 +31,20 @@ class IrisFlowerSuites extends FunSuite with BeforeAndAfterAll {
 
     val hc: HiveContext = new HiveContext(sc)
 
-//    val schemaRDD = IrisFlowerPrediction.convertRDDtoSchemaRDD(input, cached = true, hc)
-//
-//    val tenLines = schemaRDD.take(10)
+    val schemaRDD = IrisFlowerPrediction.convertRDDtoSchemaRDD(input, cached = true, hc)
+
+    val tenLines = schemaRDD.take(10)
+
+    val setosaVersicolor = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'versicolor'")
+
+    // Be very careful about this....
+    val setosaVersicolorCollection = setosaVersicolor
+
+    val setosaVirginica: SchemaRDD = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'virginica'")
+    val setosaVirginicaCollection = setosaVirginica.collect()
+
+    val versicolorVirginica = hc.sql("SELECT * FROM iris WHERE species == 'versicolor' OR species == 'virginica'")
+    val versicolorVirginicaCollection = setosaVirginica.collect()
 
     println("")
 
