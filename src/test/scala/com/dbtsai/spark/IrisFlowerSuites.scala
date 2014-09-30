@@ -34,12 +34,17 @@ class IrisFlowerSuites extends FunSuite with BeforeAndAfterAll {
 
     val tenLines = schemaRDD.take(10)
 
-    val setosaVersicolor = hc.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19")
+    val setosaVersicolor = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'versicolor'")
 
-    val setosaVirginica = hc.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19")
+    // Be very careful about this....
+    val setosaVersicolorCollection = setosaVersicolor.collect()
 
-    val versicolorVirginica = hc.sql("SELECT name FROM people WHERE age >= 13 AND age <= 19")
-    
+    val setosaVirginica = hc.sql("SELECT * FROM iris WHERE species == 'setosa' OR species == 'virginica'")
+    val setosaVirginicaCollection = setosaVirginica.collect()
+
+    val versicolorVirginica = hc.sql("SELECT * FROM iris WHERE species == 'versicolor' OR species == 'virginica'")
+    val versicolorVirginicaCollection = setosaVirginica.collect()
+
     println("")
 
   }
