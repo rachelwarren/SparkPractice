@@ -36,11 +36,13 @@ object SparkPractice extends Build {
 }
 
 object Dependencies {
+  //update this into new version of spark
+  //do the gen ido step again after you have done that.
   lazy val sharedLibraryDependencies = Seq(
     "org.scalatest" % "scalatest_2.10" % "2.0" % "test",
-    "org.apache.spark" % "spark-core_2.10" % "1.1.0",
-    "org.apache.spark" % "spark-mllib_2.10" % "1.1.0",
-    "org.apache.spark" % "spark-sql_2.10" % "1.1.0",
-    "org.apache.spark" % "spark-hive_2.10" % "1.1.0"
+    "org.apache.spark" % "spark-core_2.10" % "1.3.0",
+    "org.apache.spark" % "spark-mllib_2.10" % "1.3.0",
+    "org.apache.spark" % "spark-sql_2.10" % "1.3.0",
+    "org.apache.spark" % "spark-hive_2.10" % "1.3.0"
   )
 }
