@@ -78,7 +78,6 @@ class KMeans(centroids : Array[Vector]) extends Serializable {
 
     val (bestIndex, closest) = findClosest(v)
     linalg.BLAS.axpy(1.0, v, sums(bestIndex))
-
     //update the counts, this is a little more complicated
     var pairs : List[(Int, Double)] = Nil
     this.sums(bestIndex).foreachActive( (index, value) => {
@@ -86,8 +85,6 @@ class KMeans(centroids : Array[Vector]) extends Serializable {
               pairs = (index, v) :: pairs }
             )
     counts(bestIndex) = Vectors.sparse(this.dim, pairs)
-    println("printing the counts")
-    println( this.counts(bestIndex) )
     this
   }
 
@@ -159,14 +156,19 @@ class KMeansModel(kVal: Int, cVal: Double, MaxIt: Int) {
     )
     vectors
   }
-
-  def toSparseVector(input : RDD[String], kMeans: KMeans) = {
+  def toSparseVector(input: RDD[Array[Double]]) = {
+    input.map(
+     line => converter.denseToSparse(Vectors.dense(line))
+    )
+  }
+  def toSparseVectorString(input : RDD[String]) = {
     val cachedRDD = input.cache()
 
     cachedRDD.map (
-     line => converter.denseToSparse(Vectors.dense(line.split(",").map(_.toDouble)))
-     )
+      line => converter.denseToSparse(Vectors.dense(line.split(",").map(_.toDouble)))
+    )
   }
+
   //chose centers randomly
   def getCentersRandom(input : RDD[Vector]): Array[Vector] = {
 
@@ -186,7 +188,7 @@ class KMeansModel(kVal: Int, cVal: Double, MaxIt: Int) {
       )
       distance = next.update
       m = next
-      next.print
+
       itt +=1
     }
     //logging information
@@ -207,10 +209,6 @@ class KMeansModel(kVal: Int, cVal: Double, MaxIt: Int) {
 
   }
 
-//  def createPairs(cachedRDD : RDD[Vector], centroids : Array[Vector]) : RDD[(String, Double)] = {
-//    val m = new KMeans(centroids)
-//    cachedRDD.map( v => (m.findClosest(v)._1.toString, 1.0) )
-//  }
 
   def counts(cachedRDD : RDD[Vector], centroids : Array[Vector]) = {
     val m = new KMeans(centroids)
@@ -219,11 +217,4 @@ class KMeansModel(kVal: Int, cVal: Double, MaxIt: Int) {
 
 
 }
-// object KMeansModel{
-//   def apply(k, c, maxIt, s, input) = {
-//     val model = new KMeansModel
-//     model.setParams(k, c, maxIt, s)
-//     val centers = model.getCentersRandom(input)
-//     val means = model.computeKMeans(input, centers)
-//   }
-// }
+
