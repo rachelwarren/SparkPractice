@@ -82,6 +82,7 @@ class ComputeMeanSuites extends FunSuite with BeforeAndAfterAll {
 2     5.006000    3.428000     1.462000    0.246000
 3     5.901613    2.748387     4.393548    1.433871
 
+the counts for the three clustes are: 38, 50, 62
    */
   test("K means on iris data set "){
     println("begining k means test on iris data set" )
@@ -91,6 +92,7 @@ class ComputeMeanSuites extends FunSuite with BeforeAndAfterAll {
     val R_Result : Set[Array[Double]] = Set(Array(6.850000, 3.073684 , 5.742105, 2.071053) ,
       Array( 5.006000, 3.428000, 1.462000, 0.246000),
        Array(5.901613, 2.748387, 4.393548, 1.433871))
+    val R_Counts : Array[Double] = Array(38, 50, 62)
     val file = this.getClass.getResource("/iris.csv").toURI.toString
     val input = sc.textFile(file, 5)
     val cachedRDD = input.cache()
@@ -115,8 +117,16 @@ class ComputeMeanSuites extends FunSuite with BeforeAndAfterAll {
     var fuzzy = myResult.forall(element => R_Result.exists( setElement => DoubleCompare.fuzzyCompareArray(element, setElement, margin)))
     if( fuzzy) println("The results of Rachel's Kmean algorithm are within " + margin + " of the results of the R implementation of K means on the iris data set")
     else {  println("The results of Rachel's algorithm are not within " + margin + " of the R keamns algorithm.  ") ;  println("Rachel's results are : " + myResult.foreach( r => println(r))) }
-    assert(fuzzy) }
-  }
+    assert(fuzzy)
 
+    val clusterCounts = model.counts(data2, means)
+    clusterCounts.foreach( x => println(x._1 + " , " + x._2))
+    val myCounts : Array[Double] = clusterCounts.map(x => x._2).collect
+    //assert that the sizes of each cluster correspond within 1.0
+    assert( DoubleCompare.fuzzyCompareArray( myCounts.sorted , R_Counts.sorted, 1.5) )
+   }
+
+  }
+""
 
 
