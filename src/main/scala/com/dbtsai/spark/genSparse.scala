@@ -2,13 +2,15 @@ package com.dbtsai.spark
 
 import java.io.{FileWriter, PrintWriter}
 
+import org.apache.spark.rdd.RDD
+
 import scala.util.Random
 
 /**
  * Created by rachelwarren on 4/16/15.
  */
 class genSparse(dim : Int) {
-  val fileName = "sparseData.txt"
+  val fileName = "sparseDataSample.txt"
 
   val R = new Random
   var Rows = 0
@@ -18,7 +20,7 @@ class genSparse(dim : Int) {
   def getNext: Double ={
     val d = R.nextDouble()
     if (d < density){
-      val l = R.nextLong()
+      val l = R.nextInt()
       d*l
     } else 0.0
   }
@@ -32,6 +34,7 @@ class genSparse(dim : Int) {
       v = getNext
       Sums(d) += v
       line = line + ", " + v
+      d +=1
     }
     line
   }
@@ -42,19 +45,25 @@ class genSparse(dim : Int) {
     var r = 0
     while (r < maxRows){
       pw.println(nextRow)
+      r +=1
     }
     Rows += maxRows
     pw.close()
     fw.close()
   }
+  def getAsArray(maxRows :Int): Array[Array[Double]] = {
+    val data = Array.ofDim[Array[Double]](maxRows)
+    var r = 0
+    while(r < maxRows){
+      data(r) = Array.fill[Double](dim)(this.getNext)
+      r += 1
+    }
+    data
+  }
 
   def getAverage : Array[Double] = {
     Sums.foreach( v => v/Rows)
     Sums
-  }
-  def main(args: Array[String]) {
-    val o = new genSparse(200)
-    o.write(10)
   }
 }
 
